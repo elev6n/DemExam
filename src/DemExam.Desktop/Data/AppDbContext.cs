@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using DemExam.Desktop.Models;
+﻿using DemExam.Desktop.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace DemExam.Desktop.Data;

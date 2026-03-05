@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace DemExam.Desktop.Models;
+﻿namespace DemExam.Desktop.Models;
 
 public partial class UserStatus
 {
