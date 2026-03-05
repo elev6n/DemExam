@@ -1,4 +1,4 @@
-﻿<Window x:Class="DemExam.Desktop.MainWindow"
+﻿<Window x:Class="DemExam.Desktop.Views.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -6,7 +6,8 @@
         xmlns:local="clr-namespace:DemExam.Desktop"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
-    <Grid>
-
-    </Grid>
+    <StackPanel>
+        <TextBlock Text="Mainwindow" FontSize="24" FontWeight="Bold"></TextBlock>
+        <Frame x:Name="MainFrame" NavigationUIVisibility="Hidden"></Frame>
+    </StackPanel>
 </Window>

@@ -2,6 +2,7 @@
 using System.Windows;
 using DemExam.Desktop.Data;
 using DemExam.Desktop.Services;
+using DemExam.Desktop.ViewModels;
 using DemExam.Desktop.Views;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -19,8 +20,16 @@ public partial class App : Application
 
     public App()
     {
+        var basePath = AppDomain.CurrentDomain.BaseDirectory;
+        var configPath = Path.Combine(basePath, "appsettings.json");
+    
+        if (!File.Exists(configPath))
+        {
+            throw new FileNotFoundException($"Configuration file not found at: {configPath}");
+        }
+        
         _configuration = new ConfigurationBuilder()
-            .SetBasePath(Directory.GetCurrentDirectory())
+            .SetBasePath(AppDomain.CurrentDomain.BaseDirectory)
             .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
             .Build();
 
@@ -38,21 +47,25 @@ public partial class App : Application
         services.AddDbContext<AppDbContext>(options => options.UseNpgsql(connectionString));
 
         // Services
-        services.AddScoped<IAuthenticationService, AuthenticationService>();
-        services.AddSingleton<ICurrentUserService, CurrentUserService>();
         services.AddScoped<INavigationService, NavigationService>();
 
         // ViewModels
+        services.AddTransient<AdminViewModel>();
 
         // Views
         services.AddSingleton<MainWindow>();
         services.AddTransient<LoginWindow>();
         services.AddTransient<CaptchaWindow>();
+        services.AddTransient<AdminView>();
     }
 
     protected override void OnStartup(StartupEventArgs e)
     {
         base.OnStartup(e);
+
+        var navigationService = _serviceProvider.GetRequiredService<INavigationService>();
+
+        navigationService.RegisterView<AdminView, AdminViewModel>();
 
         var loginWindow = _serviceProvider.GetRequiredService<LoginWindow>();
         loginWindow.Show();
