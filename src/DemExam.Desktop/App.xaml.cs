@@ -2,7 +2,6 @@
 using System.Windows;
 using DemExam.Desktop.Data;
 using DemExam.Desktop.Services;
-using DemExam.Desktop.ViewModels;
 using DemExam.Desktop.Views;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -44,8 +43,6 @@ public partial class App : Application
         services.AddScoped<INavigationService, NavigationService>();
 
         // ViewModels
-        services.AddTransient<LoginViewModel>();
-        services.AddTransient<CaptchaViewModel>();
 
         // Views
         services.AddSingleton<MainWindow>();

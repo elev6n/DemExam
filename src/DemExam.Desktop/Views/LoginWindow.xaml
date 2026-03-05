@@ -5,8 +5,31 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:local="clr-namespace:DemExam.Desktop.Views"
         mc:Ignorable="d"
-        Title="LoginWindow" Height="450" Width="800">
-    <Grid>
+        Title="LoginWindow" Height="400" Width="300"
+        ResizeMode="NoResize"
+        WindowStartupLocation="CenterScreen">
+    <Grid Margin="10" VerticalAlignment="Center">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition Height="Auto"></RowDefinition>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"></ColumnDefinition>
+            <ColumnDefinition Width="*"></ColumnDefinition>
+        </Grid.ColumnDefinitions>
         
+        <TextBlock Grid.ColumnSpan="2" Text="Авторизация" FontSize="24" FontWeight="Bold" Margin="5"></TextBlock>
+        
+        <Label Grid.Row="1" Grid.Column="0" Content="Логин:" Margin="5"/>
+        <TextBox x:Name="LoginBox" Grid.Row="1" Grid.Column="1" Margin="5"/>
+
+        <Label Grid.Row="2" Grid.Column="0" Content="Пароль:" Margin="5"/>
+        <PasswordBox x:Name="PasswordBox" Grid.Row="2" Grid.Column="1" Margin="5"/>
+
+        <Button x:Name="LoginButton" Grid.Row="3" Grid.ColumnSpan="2" Grid.Column="0" Content="Войти" Margin="5" Padding="10,5" />
+        <TextBlock x:Name="ErrorText" Grid.Row="4" Grid.ColumnSpan="2" Grid.Column="0" Foreground="Red" Margin="5"/>
     </Grid>
 </Window>
