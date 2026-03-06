@@ -38,6 +38,6 @@ PS C:\Users\elev6n> dotnet --info
   10.0.103 [C:\Program Files\dotnet\sdk]
 ...
 ```
-4. Убедитесь что среди *.NET SDKs installed:* есть SDK с версией 8.\*.*
+4. Убедитесь что среди *.NET SDKs installed:* есть SDK с версией 8.0.\*
 
 В случае если необходимая версия платформы у вас неустановлена, установить ее можно [здесь](https://dotnet.microsoft.com/ru-ru/download/dotnet/8.0)
