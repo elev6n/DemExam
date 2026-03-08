@@ -12,9 +12,12 @@
             - [MS SQL Server](#для-ms-sql-server)
             - [PostgreSQL](#для-postgresql)
     - [Обзор сгенерированных классов](#обзор-сгенерированных-классов)
-      - [Models](#models)
-      - [Data](#data)
+        - [Models](#models)
+        - [Data](#data)
 - [Dependency Injection](#dependency-injection)
+    - [Жизненный цикл](#жизненный-цикл)
+    - [Как регистрировать сервисы?](#как-регистрировать-сервисы)
+    - [Как доставать сервисы из DI?](#как-доставать-сервисы-из-di)
 - [MVVM](#mvvm)
 
 # Структура проекта
@@ -176,7 +179,9 @@ _Терминал_
 dotnet ef dbcontext scaffold "Host=localhost;Port=5432;Database=имя_вашей_бд;Username=логин;Password=пароль" Npgsql.EntityFrameworkCore.PostgreSQL --output-dir Models --context-dir Data --context AppDbContext
 ```
 
-###### _Если вы внесли изменения в базу данных и вам необходимо обновить контекст и модели, то достаточно еще раз выполнить ту-же самую команду, но с флагом `--Force` и тогда все классы автоматически обновятся_
+###### _Если вы внесли изменения в базу данных и вам необходимо обновить контекст и модели, то достаточно еще раз
+
+выполнить ту-же самую команду, но с флагом `--Force` и тогда все классы автоматически обновятся_
 
 _Консоль диспетчера пакетов_
 
@@ -265,8 +270,7 @@ public partial class UserRole
 необязательно.
 
 ```csharp
-using DemExam.Desktop.Models;
-using Microsoft.EntityFrameworkCore;
+using ...
 
 namespace DemExam.Desktop.Data;
 
@@ -364,4 +368,207 @@ public partial class AppDbContext : DbContext
 
 # Dependency Injection
 
+**Dependency Injection (DI)** - это паттерн проектирования суть которого создать общий для всего
+приложения **контейнер**, где регистрируются все компоненты.
+_Killer Feature_ паттерна - это **управление жизненным циклом** компонентов.
+Существуют сервисы, которые должны хранить состояние в течении всей жизни приложения, они инициализируются один раз и
+потом этот один и тот-же объект получают все классы, а бывают компоненты с одним **Instance** на один запрос,
+такие объекты инициализируются каждый раз когда к ним обращаются. Если бы мы контролировали жизненный цикл каждого
+объекта вручную, то нам приходилось бы писать new для каждого класса в приложении, в случае с Singleton объектами нам
+пришлось бы передавать его во все классы, создавая дерево из состояний. Такой код сложен в отладке и поддержке из-за
+сильной связанности.
+Использование такого подхода необязательно на дем экзамене, но я могу его рекомендовать, потому что тогда у вас будет
+централизованное управление всеми экземплярами компонентов в приложении. При том времени на реализацию такого паттерна
+тратиться совсем мало зато бонусов он дает невероятно много.
+
+_Пространство имен `Microsoft.Extensions.DependencyInjection` по умолчанию подключено в проекты на **.NET 8.0** и выше,_
+_но если вдруг его у вас нет, полезно знать как его подключить:_
+
+```bash
+dotnet add package Microsoft.Extensions.DependencyInjection --version 8.0.0
+```
+
+## Жизненный цикл
+
+Как я и писал выше, у сервисов может быть разный **жизненный цикл**. Одни сервисы должны жить пока живет приложение,
+а другие живут только пока к ним обращаются. Интерфейс `IServiceCollection` предоставляет удобные методы для регистрации
+сервисов с разным жизненным циклом:
+
+* Transient (`AddTransient()`) - новый экземпляр создается при каждом запросе, _подходит для сервисов не имеющих
+  состояние_
+* Scoped (`AddScoped()`) - один экземпляр на область (обычно HTTP-запрос), ~~_нам не нужен_~~, _пока нужен для сервиса
+  навигации_
+* Singleton (`AddSingleton()`) - один экземпляр на все приложение, _подходит для сервисов с состоянием_
+
+## Как регистрировать сервисы?
+
+Зависимости обычно регистрируются в точке входа в программу (_класс `Program`/`App`_), а тип, который регистрирует их,
+реализует IServiceCollection. Для создания **DI** контейнера (_для последующего извлечения сервисов из него_)
+нужен тип ServiceProvider. Ниже пример регистрации сервисов в нашем приложении:
+
+```csharp
+using ...
+
+namespace DemExam.Desktop;
+
+/// <summary>
+/// Interaction logic for App.xaml
+/// </summary>
+public partial class App : Application
+{
+    private readonly ServiceProvider _serviceProvider; // Поле для создания ServiceProvider
+
+    public App()
+    {
+        var services = new ServiceCollection(); // Инициализация коллекции сервисов
+        ConfigureServices(services); // Регистрация сервисов в коллекции
+        _serviceProvider = services.BuildServiceProvider(); // Создание объекта ServiceProvider
+    }
+
+    // Метод для регистрации сервисов
+    private void ConfigureServices(IServiceCollection services) 
+    {
+        // Строка подключения к БД 
+        var connectionString = "Host=localhost;Port=5432;Database=имя_вашей_бд;Username=логин;Password=пароль";
+        
+        // Data
+        services.AddDbContext<AppDbContext>(options => options.UseNpgsql(connectionString));
+
+        // Services
+        services.AddScoped<INavigationService, NavigationService>(); // Scoped потому что начинает жить после Авторизации
+
+        // ViewModels
+        services.AddTransient<AdminViewModel>(); // Transient потому что живет только пока открыта страница Администратора
+
+        // Views
+        services.AddSingleton<MainWindow>();    // Singleton потому что это главное окно приложения, пока живет оно - живет приложение.
+        services.AddTransient<LoginWindow>();   // Используем Transient для всех окон и страниц (кроме MainWindow) 
+        services.AddTransient<CaptchaWindow>(); // так как их состояние нам нужно, пока они открыты.
+        services.AddTransient<AdminView>();     
+    }
+}
+
+```
+
+## Как доставать сервисы из DI?
+
+Для того чтобы использовать сервис в других достаточно указать его как параметр в конструкторе класса, а **DI**
+сам подставит параметр при инициализации:
+
+```csharp
+using ...
+
+namespace DemExam.Desktop.Views;
+
+/// <summary>
+/// Interaction logic for MainWindow.xaml
+/// </summary>
+public partial class MainWindow : Window
+{
+    private readonly INavigationService _navigationService; // Поле для использования сервиса в классе
+
+    public MainWindow(INavigationService navigationService) // Конструктор с параметром
+    {
+        InitializeComponent();
+        _navigationService = navigationService;             // Инициализация поля с состоянием сервиса из DI
+    }
+}
+
+```
+
+Это называется **внедрение зависимостей через конструктор**.
+Но есть и другой способ получения сервиса из DI:
+
+```csharp
+using ...
+
+namespace DemExam.Desktop;
+
+/// <summary>
+/// Interaction logic for App.xaml
+/// </summary>
+public partial class App : Application
+{
+    private readonly ServiceProvider _serviceProvider; // Поле ServiceProvider для получения сервисов из DI
+    
+    ...
+        
+    protected override void OnStartup(StartupEventArgs e)
+    {
+        base.OnStartup(e);
+
+        // Получение NavigationService из DI через ServiceProvider
+        var navigationService = _serviceProvider.GetRequiredService<INavigationService>();
+
+        // Использование сервиса
+        navigationService.RegisterView<AdminView, AdminViewModel>();                        
+
+        // Получение LoginWindow из DI через ServiceProvider
+        var loginWindow = _serviceProvider.GetRequiredService<LoginWindow>();
+        
+        // Использование окна логина
+        loginWindow.Show(); 
+    }
+}
+```
+
+```csharp
+using ...
+
+namespace DemExam.Desktop.Views;
+
+public partial class LoginWindow : Window
+{
+    private readonly IServiceProvider _serviceProvider; // Поле ServiceProvider для получения сервисов из DI
+
+    public LoginWindow(AppDbContext context, IServiceProvider serviceProvider)
+    {
+        InitializeComponent();
+        _serviceProvider = serviceProvider; // Получение ServiceProvider из DI
+    }
+    
+    private async void LoginButton_OnClick(object sender, RoutedEventArgs e)
+    {
+        var mainWindow = _serviceProvider.GetRequiredService<MainWindow>(); // Получение MainWindow из DI через ServiceProvider 
+        mainWindow.Show(); // Использование MainWindow
+
+        Close();
+    }
+}
+```
+
+Второй подход рекомендуется использовать крайне редко, так как это повышает связность между классами.
+Нужно это только если мы хотим **динамически создавать объекты в run-time**, во всех остальных случаях лучше
+использовать **внедрение зависимостей через конструктор**.
+
 # MVVM
+
+**Model-View-ViewModel (MVVM)** - это современный подход к созданию клиентских приложений. Основная цель подхода -
+разделить логику работы с данными и отображение данных. Эта архитектура считается эталонной и реализуется повсеместно.
+В **.NET** есть библиотека предоставляющая удобные абстракции для генерации кода **MVVM**.
+
+_Для решения демонстрационного экзамена использовать эту архитектуру и библиотеку абсолютно необязательно и может даже
+навредить
+если вы неподготовленный студент, но в руках знающего человека - это потрясающий инструмент, который может сильно
+упростить жизнь_
+
+## Model
+
+**Model** - это модель данных которая является объектом для отображения. Это и есть наши [модели](Models/MODELS.md) 
+которые мы сгенерировали из базы данных. В других решениях обычно используется **Data-Transfer Object (DTO)**, но в этом
+проекте это будет лишним.
+
+## View
+
+## ViewModel
+
+asd
+
+asd
+
+asd
+
+asd
+
+asd
+
