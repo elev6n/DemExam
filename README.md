@@ -148,7 +148,7 @@ CREATE TABLE users
 Установить все эти библиотеки можно либо через графический интерфейс (_"Управление пакетами NuGet"_), либо через CLI
 (_ниже версия с PostgreSQL_)
 
-```powershell
+```bash
 dotnet add package Microsoft.EntityFrameworkCore --version 8.0.4
 dotnet add package Microsoft.EntityFrameworkCore.Design --version 8.0.4
 dotnet add package Microsoft.EntityFrameworkCore.Tools --version 8.0.4
@@ -168,6 +168,10 @@ Microsoft.EntityFrameworkCore 10.0.3_), то ваш проект **не смож
 
 # Особенности решения
 
-- Работа с базой данных через ORM Entity Framework
+- Работа с базой данных через ORM Entity Framework Core
 - Использование DI для регистрации компонентов
 - Архитектура MVVM (Model-View-ViewModel)
+
+_Позднее я постараюсь подготовить оптимизированное решение с использованием только **Entity Framework Core**, а пока тут
+будет решение которое лично я буду использовать на демонстрационном экзамене. Если вы перепишите несколько раз этот 
+проект и поймете суть используемых подходов, то это может стать и вашей main стратегией._
