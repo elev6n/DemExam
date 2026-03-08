@@ -94,7 +94,9 @@ _DBeaver_).
 
 ### ERD
 
-![ERD.png](images/ERD.png)
+<a href="https://github.com/elev6n/DemExam/blob/master/images/ERD.png">
+    <img src="https://github.com/elev6n/DemExam/blob/master/images/ERD.png" alt="ERD" />
+</a>
 
 ### SQL-Script
 
