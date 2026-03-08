@@ -94,7 +94,7 @@ _DBeaver_).
 
 ### ERD
 
-![ERD.png](docs/ERD.png)
+![ERD.png](images/ERD.png)
 
 ### SQL-Script
 
