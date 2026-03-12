@@ -24,10 +24,10 @@
         <TextBlock Grid.ColumnSpan="2" Text="Авторизация" FontSize="24" FontWeight="Bold" Margin="5"></TextBlock>
 
         <Label Grid.Row="1" Grid.Column="0" Content="Логин:" Margin="5" />
-        <TextBox x:Name="LoginBox" Grid.Row="1" Grid.Column="1" Margin="5" />
+        <TextBox Text="admin" x:Name="LoginBox" Grid.Row="1" Grid.Column="1" Margin="5" />
 
         <Label Grid.Row="2" Grid.Column="0" Content="Пароль:" Margin="5" />
-        <PasswordBox x:Name="PasswordBox" Grid.Row="2" Grid.Column="1" Margin="5" />
+        <PasswordBox Password="admin" x:Name="PasswordBox" Grid.Row="2" Grid.Column="1" Margin="5" />
 
         <Button x:Name="LoginButton" Grid.Row="3" Grid.ColumnSpan="2" Grid.Column="0" Content="Войти" Margin="5"
                 Padding="10,5" Click="LoginButton_OnClick" />

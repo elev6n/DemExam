@@ -4,12 +4,9 @@ using DemExam.Desktop.Services;
 
 namespace DemExam.Desktop.ViewModels;
 
-public partial class ViewModelBase(AppDbContext context, INavigationService navigationService)
+public abstract partial class ViewModelBase
     : ObservableObject, IViewModel
 {
-    protected readonly AppDbContext Context = context;
-    protected readonly INavigationService NavigationService = navigationService;
-
     [ObservableProperty] private string _title = "";
 
     public string? ErrorMessage
@@ -28,5 +25,5 @@ public partial class ViewModelBase(AppDbContext context, INavigationService navi
         private set => SetProperty(ref field, value);
     }
 
-    public Task OnActivatedAsync() => Task.CompletedTask;
+    public virtual Task OnActivatedAsync() => Task.CompletedTask;
 }
