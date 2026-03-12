@@ -16,8 +16,7 @@ public partial class MainWindow : Window
     {
         InitializeComponent();
         _navigationService = navigationService;
-
-        _navigationService.SetFrame(MainFrame);
+        DataContext = navigationService;
 
         Loaded += OnWindowLoaded;
     }
