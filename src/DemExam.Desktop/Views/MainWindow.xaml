@@ -3,11 +3,24 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:DemExam.Desktop"
+        xmlns:vm="clr-namespace:DemExam.Desktop.ViewModels"
+        xmlns:views="clr-namespace:DemExam.Desktop.Views"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="MainWindow" MinHeight="768" MinWidth="1366">
+
+    <Window.Resources>
+        <DataTemplate DataType="{x:Type vm:AdminViewModel}">
+            <views:AdminView />
+        </DataTemplate>
+
+        <DataTemplate DataType="{x:Type vm:CreateEditUserViewModel}">
+            <views:CreateEditUserView></views:CreateEditUserView>
+        </DataTemplate>
+    </Window.Resources>
+
     <StackPanel>
-        <TextBlock Text="Mainwindow" FontSize="24" FontWeight="Bold"></TextBlock>
-        <Frame x:Name="MainFrame" NavigationUIVisibility="Hidden"></Frame>
+        <TextBlock Text="MainWindow" FontSize="24" FontWeight="Bold" />
+        
+        <ContentControl Content="{Binding CurrentViewModel}"></ContentControl>
     </StackPanel>
 </Window>

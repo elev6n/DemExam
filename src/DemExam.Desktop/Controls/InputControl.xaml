@@ -1,0 +1,28 @@
+﻿<UserControl x:Class="DemExam.Desktop.Controls.InputControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:local="clr-namespace:DemExam.Desktop.Controls"
+             mc:Ignorable="d"
+             d:DesignHeight="30" d:DesignWidth="300">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"></ColumnDefinition>
+            <ColumnDefinition Width="*"></ColumnDefinition>
+        </Grid.ColumnDefinitions>
+
+        <TextBlock x:Name="CaptionLabel"
+                   Grid.Column="0"
+                   VerticalAlignment="Center"
+                   Margin="0,0,5,0"
+                   Text="{Binding Caption, RelativeSource={RelativeSource AncestorType=UserControl}}">
+        </TextBlock>
+
+        <TextBox x:Name="InputTextBox"
+                 Grid.Column="1"
+                 VerticalAlignment="Center"
+                 TextWrapping="NoWrap">
+        </TextBox>
+    </Grid>
+</UserControl>

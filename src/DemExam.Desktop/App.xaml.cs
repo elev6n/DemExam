@@ -22,12 +22,12 @@ public partial class App : Application
     {
         var basePath = AppDomain.CurrentDomain.BaseDirectory;
         var configPath = Path.Combine(basePath, "appsettings.json");
-    
+
         if (!File.Exists(configPath))
         {
             throw new FileNotFoundException($"Configuration file not found at: {configPath}");
         }
-        
+
         _configuration = new ConfigurationBuilder()
             .SetBasePath(AppDomain.CurrentDomain.BaseDirectory)
             .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
@@ -51,22 +51,20 @@ public partial class App : Application
 
         // ViewModels
         services.AddTransient<AdminViewModel>();
+        services.AddTransient<CreateEditUserViewModel>();
 
         // Views
         services.AddSingleton<MainWindow>();
         services.AddTransient<LoginWindow>();
         services.AddTransient<CaptchaWindow>();
         services.AddTransient<AdminView>();
+        services.AddTransient<CreateEditUserView>();
     }
 
     protected override void OnStartup(StartupEventArgs e)
     {
         base.OnStartup(e);
-
-        var navigationService = _serviceProvider.GetRequiredService<INavigationService>();
-
-        navigationService.RegisterView<AdminView, AdminViewModel>();
-
+        
         var loginWindow = _serviceProvider.GetRequiredService<LoginWindow>();
         loginWindow.Show();
     }

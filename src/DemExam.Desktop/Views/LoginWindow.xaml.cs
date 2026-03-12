@@ -19,7 +19,6 @@ public partial class LoginWindow : Window
         _serviceProvider = serviceProvider;
     }
 
-
     private async void LoginButton_OnClick(object sender, RoutedEventArgs e)
     {
         var login = LoginBox.Text;
