@@ -2,5 +2,9 @@
 
 public interface IViewModel
 {
+    string? ErrorMessage { get; }
+    
+    string Title { get; }
+    
     Task OnActivatedAsync() => Task.CompletedTask;
 }
