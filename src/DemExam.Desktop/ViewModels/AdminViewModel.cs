@@ -28,18 +28,18 @@ public partial class AdminViewModel : ViewModelBase
     [RelayCommand]
     private void AddUser()
     {
-        NavigationService.NavigateTo<CreateEditUserViewModel>();
+        NavigationService.NavigateToAsync<CreateEditUserViewModel>();
     }
 
     [RelayCommand]
     private void EditUser(User? user)
     {
         if (user != null)
-            NavigationService.NavigateTo<CreateEditUserViewModel>();
+            NavigationService.NavigateToAsync<CreateEditUserViewModel>(user);
     }
 
     [RelayCommand]
-    private async Task DeleteUser(User? user) 
+    private async Task DeleteUser(User? user)
     {
         if (user == null) return;
 

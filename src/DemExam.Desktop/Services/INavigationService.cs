@@ -6,5 +6,6 @@ public interface INavigationService
 {
     IViewModel CurrentViewModel { get; }
 
-    Task NavigateTo<TViewModel>() where TViewModel : ViewModelBase;
+    Task NavigateToAsync<TViewModel>() where TViewModel : IViewModel;
+    Task NavigateToAsync<TViewModel>(object? parameter) where TViewModel : IViewModel;
 }

@@ -47,7 +47,7 @@ public partial class App : Application
         services.AddDbContext<AppDbContext>(options => options.UseNpgsql(connectionString));
 
         // Services
-        services.AddScoped<INavigationService, NavigationService>();
+        services.AddSingleton<INavigationService, NavigationService>();
 
         // ViewModels
         services.AddTransient<AdminViewModel>();

@@ -26,7 +26,7 @@ public partial class MainWindow : Window
         switch (Session.UserRole)
         {
             case 1:
-                _navigationService.NavigateTo<AdminViewModel>();
+                _navigationService.NavigateToAsync<AdminViewModel>();
                 break;
             default:
                 break;

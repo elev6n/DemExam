@@ -10,13 +10,11 @@ using Microsoft.EntityFrameworkCore;
 namespace DemExam.Desktop.ViewModels;
 
 public partial class CreateEditUserViewModel(AppDbContext context, INavigationService navigationService)
-    : ViewModelBase(context, navigationService)
+    : ViewModelBase(context, navigationService), IParameterReceiver
 {
-    [ObservableProperty] private User? _user = new();
+    [ObservableProperty] private User? _user;
 
     [ObservableProperty] private bool _isEditMode;
-
-    [ObservableProperty] private string _title = "Добавить нового пользователя";
 
     [ObservableProperty] private ObservableCollection<UserRole> _roles = [];
 
@@ -38,38 +36,38 @@ public partial class CreateEditUserViewModel(AppDbContext context, INavigationSe
             User.UserStatus = value.Id;
     }
 
-    public async Task InitializeAsync(int? userId = null)
+    public async Task OnNavigatedToAsync(object? parameter)
     {
-        var rolesTask = Context.UserRoles.ToListAsync();
-        var statusesTask = Context.UserStatuses.ToListAsync();
-        await Task.WhenAll(rolesTask, statusesTask);
+        await LoadRolesAndStatusesAsync();
 
-        Roles = new ObservableCollection<UserRole>(rolesTask.Result);
-        Statuses = new ObservableCollection<UserStatus>(statusesTask.Result);
-
-        if (userId.HasValue)
+        if (parameter is User user)
         {
-            await GetUserAsync(userId.Value);
-            SelectedRole = Roles.FirstOrDefault(r => r.Id == User!.UserRole);
-            SelectedStatus = Statuses.FirstOrDefault(s => s.Id == User!.UserStatus);
+            User = user;
             IsEditMode = true;
             Title = "Изменить пользователя";
         }
         else
         {
             User = new User();
-            SelectedRole = Roles.FirstOrDefault();
-            SelectedStatus = Statuses.FirstOrDefault();
             IsEditMode = false;
             Title = "Добавить нового пользователя";
         }
+
+        if (User != null)
+        {
+            SelectedRole = Roles.FirstOrDefault(r => r.Id == User.UserRole);
+            SelectedStatus = Statuses.FirstOrDefault(s => s.Id == User.UserStatus);
+        }
     }
 
-    private async Task GetUserAsync(int userId)
+    private async Task LoadRolesAndStatusesAsync()
     {
-        var existingUser = await Context.Users.FindAsync(userId);
-        if (existingUser != null)
-            User = existingUser;
+        var rolesTask = Context.UserRoles.ToListAsync();
+        var statusesTask = Context.UserStatuses.ToListAsync();
+        await Task.WhenAll(rolesTask, statusesTask);
+
+        Roles = new ObservableCollection<UserRole>(await rolesTask);
+        Statuses = new ObservableCollection<UserStatus>(await statusesTask);
     }
 
     [RelayCommand]
@@ -106,10 +104,10 @@ public partial class CreateEditUserViewModel(AppDbContext context, INavigationSe
         }
         finally
         {
-            await NavigationService.NavigateTo<AdminViewModel>();
+            await NavigationService.NavigateToAsync<AdminViewModel>();
         }
     }
 
     [RelayCommand]
-    private void Cancel() => NavigationService.NavigateTo<AdminViewModel>();
+    private void Cancel() => NavigationService.NavigateToAsync<AdminViewModel>();
 }
