@@ -12,11 +12,11 @@
             <TextBlock Text="{Binding Title}" FontSize="18" FontWeight="SemiBold" VerticalAlignment="Center"></TextBlock>
 
             <StackPanel Margin="10">
-                <controls:InputControl Caption="Фамилия" Text="{Binding User.LastName}" Margin="5" />
-                <controls:InputControl Caption="Имя" Text="{Binding User.FirstName}" Margin="5" />
-                <controls:InputControl Caption="Отчество" Text="{Binding User.Patronymic}" Margin="5" />
-                <controls:InputControl Caption="Логин" Text="{Binding User.Login}" Margin="5" />
-                <controls:InputControl Caption="Пароль" Text="{Binding User.Password}" Margin="5" />
+                <controls:InputControl Caption="Фамилия:" Text="{Binding User.LastName}" Margin="5" />
+                <controls:InputControl Caption="Имя:" Text="{Binding User.FirstName}" Margin="5" />
+                <controls:InputControl Caption="Отчество:" Text="{Binding User.Patronymic}" Margin="5" />
+                <controls:InputControl Caption="Логин:" Text="{Binding User.Login}" Margin="5" />
+                <controls:InputControl Caption="Пароль:" Text="{Binding User.Password}" Margin="5" />
                 
                 <TextBlock Text="Роль" Margin="5,10,5,0"></TextBlock>
                 <ComboBox ItemsSource="{Binding Roles}"

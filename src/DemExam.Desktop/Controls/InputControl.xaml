@@ -8,8 +8,8 @@
              d:DesignHeight="30" d:DesignWidth="300">
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="Auto"></ColumnDefinition>
             <ColumnDefinition Width="*"></ColumnDefinition>
+            <ColumnDefinition Width="Auto"></ColumnDefinition>
         </Grid.ColumnDefinitions>
 
         <TextBlock x:Name="CaptionLabel"
@@ -22,7 +22,8 @@
         <TextBox x:Name="InputTextBox"
                  Grid.Column="1"
                  VerticalAlignment="Center"
-                 TextWrapping="NoWrap">
+                 TextWrapping="NoWrap"
+                 Width="120">
         </TextBox>
     </Grid>
 </UserControl>
