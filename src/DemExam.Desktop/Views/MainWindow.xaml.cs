@@ -21,12 +21,15 @@ public partial class MainWindow : Window
         Loaded += OnWindowLoaded;
     }
 
-    private void OnWindowLoaded(object sender, RoutedEventArgs e)
+    private async void OnWindowLoaded(object sender, RoutedEventArgs e)
     {
-        switch (Session.UserRole)
+        if (Session.CurrentUser == null)
+            await _navigationService.NavigateToAsync<AuthorizationViewModel>();
+        
+        switch (Session.CurrentUser!.UserRole)
         {
             case 1:
-                _navigationService.NavigateToAsync<AdminViewModel>();
+                await _navigationService.NavigateToAsync<AdminViewModel>();
                 break;
             default:
                 break;

@@ -37,8 +37,6 @@ public partial class LoginWindow : Window
                 .Include(u => u.UserStatusNavigation)
                 .FirstOrDefaultAsync(u => u.Login == login && u.Password == password) ?? throw new NotFoundException();
 
-            Session.UserRole = user.UserRole;
-
             var mainWindow = _serviceProvider.GetRequiredService<MainWindow>();
             mainWindow.Show();
 
