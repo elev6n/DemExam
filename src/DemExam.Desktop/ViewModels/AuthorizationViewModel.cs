@@ -8,7 +8,10 @@ using Microsoft.EntityFrameworkCore;
 
 namespace DemExam.Desktop.ViewModels;
 
-public partial class AuthorizationViewModel(AppDbContext context, INavigationService navigationService) : ViewModelBase
+public partial class AuthorizationViewModel(
+    AppDbContext context,
+    INavigationService navigationService,
+    ICaptchaService captchaService) : ViewModelBase
 {
     [ObservableProperty] private string _login = "admin";
 
@@ -19,7 +22,7 @@ public partial class AuthorizationViewModel(AppDbContext context, INavigationSer
     {
         var passwordBox = parameter as PasswordBox;
         var password = passwordBox?.Password ?? string.Empty;
-        
+
         if (string.IsNullOrWhiteSpace(Login) || string.IsNullOrWhiteSpace(password))
         {
             ErrorMessage = "Заполните все поля";
@@ -40,6 +43,15 @@ public partial class AuthorizationViewModel(AppDbContext context, INavigationSer
         if (user.UserStatus == 2)
         {
             ErrorMessage = "Вы заблокированы. Обратитесь к администратору";
+            return;
+        }
+
+        Session.FailedAttempts = 0;
+
+        var captchaPassed = captchaService.ShowCaptcha();
+        if (!captchaPassed)
+        {
+            await HandleFailedAttempt("Ошибка прохождения капчи");
             return;
         }
 

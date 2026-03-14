@@ -48,6 +48,7 @@ public partial class App : Application
 
         // Services
         services.AddSingleton<INavigationService, NavigationService>();
+        services.AddSingleton<ICaptchaService, CaptchaService>();
 
         // ViewModels
         services.AddTransient<AuthorizationViewModel>();
@@ -57,7 +58,6 @@ public partial class App : Application
         // Views
         services.AddSingleton<MainWindow>();
         services.AddTransient<AuthorizationView>();
-        services.AddTransient<CaptchaWindow>();
         services.AddTransient<AdminView>();
         services.AddTransient<CreateEditUserView>();
     }
