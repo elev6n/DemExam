@@ -1,6 +1,5 @@
 ﻿using System.Windows;
 using DemExam.Desktop.Services;
-using DemExam.Desktop.Store;
 using DemExam.Desktop.ViewModels;
 
 namespace DemExam.Desktop.Views;
@@ -23,16 +22,6 @@ public partial class MainWindow : Window
 
     private async void OnWindowLoaded(object sender, RoutedEventArgs e)
     {
-        if (Session.CurrentUser == null)
-            await _navigationService.NavigateToAsync<AuthorizationViewModel>();
-        
-        switch (Session.CurrentUser!.UserRole)
-        {
-            case 1:
-                await _navigationService.NavigateToAsync<AdminViewModel>();
-                break;
-            default:
-                break;
-        }
+        await _navigationService.NavigateToAsync<AuthorizationViewModel>();
     }
 }
