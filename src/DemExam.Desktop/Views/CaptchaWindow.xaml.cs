@@ -11,27 +11,27 @@ public partial class CaptchaWindow : Window
 {
     private readonly Random _random = new();
     private readonly List<Image> _pieces = [];
-    
+
     private bool _isDragging;
     private Image? _dragged;
     private Point _offset;
-    
+
     public CaptchaWindow()
     {
         InitializeComponent();
 
         Loaded += (s, e) => InitializePuzzle();
     }
-    
+
     public bool IsCaptchaPassed { get; private set; }
 
     private void InitializePuzzle()
     {
         PuzzleCanvas.Children.Clear();
         _pieces.Clear();
-        
+
         var folder = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Captcha");
-        
+
         for (var i = 1; i <= 4; i++)
         {
             var img = new Image
@@ -41,7 +41,7 @@ public partial class CaptchaWindow : Window
                 Tag = i,
                 Source = new BitmapImage(new Uri(Path.Combine(folder, $"{i}.png"))),
             };
-            
+
             Canvas.SetLeft(img, _random.Next(0, 120));
             Canvas.SetTop(img, _random.Next(0, 120));
 
@@ -57,7 +57,7 @@ public partial class CaptchaWindow : Window
     private void Image_MouseDown(object sender, MouseButtonEventArgs e)
     {
         _dragged = sender as Image;
-        
+
         if (_dragged != null)
         {
             _isDragging = true;
@@ -111,7 +111,7 @@ public partial class CaptchaWindow : Window
             var timer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(1) };
             timer.Tick += (s, args) =>
             {
-                timer.Stop(); 
+                timer.Stop();
                 DialogResult = true;
             };
             timer.Start();
