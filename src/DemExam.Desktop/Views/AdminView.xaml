@@ -17,8 +17,7 @@
                    Text="Пользователи"
                    FontSize="18"
                    FontWeight="Bold"
-                   Margin="5">
-        </TextBlock>
+                   Margin="5" />
 
         <ScrollViewer Grid.Row="1">
             <DataGrid x:Name="UsersDataGrid"
@@ -27,31 +26,29 @@
                       IsReadOnly="True"
                       AutoGenerateColumns="False">
                 <DataGrid.Columns>
-                    <DataGridTextColumn Header="ID" Binding="{Binding Id}"></DataGridTextColumn>
-                    <DataGridTextColumn Header="Фамилия" Binding="{Binding LastName}"></DataGridTextColumn>
-                    <DataGridTextColumn Header="Имя" Binding="{Binding FirstName}"></DataGridTextColumn>
-                    <DataGridTextColumn Header="Отчество" Binding="{Binding Patronymic}"></DataGridTextColumn>
-                    <DataGridTextColumn Header="Логин" Binding="{Binding Login}"></DataGridTextColumn>
+                    <DataGridTextColumn Header="ID" Binding="{Binding Id}" />
+                    <DataGridTextColumn Header="Фамилия" Binding="{Binding LastName}" />
+                    <DataGridTextColumn Header="Имя" Binding="{Binding FirstName}" />
+                    <DataGridTextColumn Header="Отчество" Binding="{Binding Patronymic}" />
+                    <DataGridTextColumn Header="Логин" Binding="{Binding Login}" />
                     <DataGridTemplateColumn>
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
                                 <StackPanel Orientation="Horizontal">
                                     <Button Content="Редактировать"
                                             Command="{Binding DataContext.EditUserCommand, ElementName=UsersDataGrid}"
-                                            CommandParameter="{Binding .}">
-                                    </Button>
+                                            CommandParameter="{Binding .}" />
 
                                     <Button Content="Удалить"
                                             Command="{Binding DataContext.DeleteUserCommand, ElementName=UsersDataGrid}"
-                                            CommandParameter="{Binding .}">
-                                    </Button>
+                                            CommandParameter="{Binding .}" />
                                 </StackPanel>
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>
                 </DataGrid.Columns>
             </DataGrid>
-            
+
         </ScrollViewer>
 
         <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Center">

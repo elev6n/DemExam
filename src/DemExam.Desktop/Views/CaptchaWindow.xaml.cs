@@ -9,11 +9,11 @@ namespace DemExam.Desktop.Views;
 
 public partial class CaptchaWindow : Window
 {
-    private readonly Random _random = new();
     private readonly List<Image> _pieces = [];
+    private readonly Random _random = new();
+    private Image? _dragged;
 
     private bool _isDragging;
-    private Image? _dragged;
     private Point _offset;
 
     public CaptchaWindow()
@@ -39,7 +39,7 @@ public partial class CaptchaWindow : Window
                 Width = 80,
                 Height = 80,
                 Tag = i,
-                Source = new BitmapImage(new Uri(Path.Combine(folder, $"{i}.png"))),
+                Source = new BitmapImage(new Uri(Path.Combine(folder, $"{i}.png")))
             };
 
             Canvas.SetLeft(img, _random.Next(0, 120));

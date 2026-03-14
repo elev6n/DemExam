@@ -1,6 +1,6 @@
 ﻿namespace DemExam.Desktop.Models;
 
-public partial class UserRole
+public class UserRole
 {
     public int Id { get; set; }
 

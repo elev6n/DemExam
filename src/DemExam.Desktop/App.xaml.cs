@@ -11,26 +11,23 @@ using Microsoft.Extensions.DependencyInjection;
 namespace DemExam.Desktop;
 
 /// <summary>
-/// Interaction logic for App.xaml
+///     Interaction logic for App.xaml
 /// </summary>
 public partial class App : Application
 {
-    private readonly ServiceProvider _serviceProvider;
     private readonly IConfiguration _configuration;
+    private readonly ServiceProvider _serviceProvider;
 
     public App()
     {
         var basePath = AppDomain.CurrentDomain.BaseDirectory;
         var configPath = Path.Combine(basePath, "appsettings.json");
 
-        if (!File.Exists(configPath))
-        {
-            throw new FileNotFoundException($"Configuration file not found at: {configPath}");
-        }
+        if (!File.Exists(configPath)) throw new FileNotFoundException($"Configuration file not found at: {configPath}");
 
         _configuration = new ConfigurationBuilder()
             .SetBasePath(AppDomain.CurrentDomain.BaseDirectory)
-            .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+            .AddJsonFile("appsettings.json", false, true)
             .Build();
 
         var services = new ServiceCollection();

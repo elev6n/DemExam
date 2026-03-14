@@ -5,7 +5,7 @@ using DemExam.Desktop.ViewModels;
 namespace DemExam.Desktop.Views;
 
 /// <summary>
-/// Interaction logic for MainWindow.xaml
+///     Interaction logic for MainWindow.xaml
 /// </summary>
 public partial class MainWindow : Window
 {
