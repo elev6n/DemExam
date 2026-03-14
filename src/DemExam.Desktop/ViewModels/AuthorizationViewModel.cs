@@ -11,11 +11,9 @@ namespace DemExam.Desktop.ViewModels;
 public partial class AuthorizationViewModel(
     AppDbContext context,
     INavigationService navigationService,
-    ICaptchaService captchaService) : ViewModelBase
+    ICaptchaService captchaService) : ViewModelBase(context, navigationService)
 {
     [ObservableProperty] private string _login = "admin";
-
-    [ObservableProperty] private string _errorMessage = "";
 
     [RelayCommand]
     private async Task LoginAsync(object parameter)
@@ -29,7 +27,7 @@ public partial class AuthorizationViewModel(
             return;
         }
 
-        var user = await context.Users
+        var user = await Context.Users
             .Include(u => u.UserRoleNavigation)
             .Include(u => u.UserStatusNavigation)
             .FirstOrDefaultAsync(u => u.Login == Login && u.Password == password);
@@ -59,7 +57,7 @@ public partial class AuthorizationViewModel(
         Session.CurrentUser = user;
 
         if (user.UserRole == 1)
-            await navigationService.NavigateToAsync<AdminViewModel>();
+            await NavigationService.NavigateToAsync<AdminViewModel>();
     }
 
     private async Task HandleFailedAttempt(string message)
@@ -69,11 +67,11 @@ public partial class AuthorizationViewModel(
         {
             if (!string.IsNullOrWhiteSpace(Login))
             {
-                var user = await context.Users.FirstOrDefaultAsync(u => u.Login == Login);
+                var user = await Context.Users.FirstOrDefaultAsync(u => u.Login == Login);
                 if (user != null)
                 {
                     user.UserStatus = 2;
-                    await context.SaveChangesAsync();
+                    await Context.SaveChangesAsync();
                 }
             }
 

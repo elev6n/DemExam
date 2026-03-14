@@ -9,7 +9,8 @@ using Microsoft.EntityFrameworkCore;
 
 namespace DemExam.Desktop.ViewModels;
 
-public partial class AdminViewModel(AppDbContext context, INavigationService navigationService) : ViewModelBase
+public partial class AdminViewModel(AppDbContext context, INavigationService navigationService)
+    : ViewModelBase(context, navigationService)
 {
     [ObservableProperty] private ObservableCollection<User> _allUsers = [];
 
@@ -17,20 +18,20 @@ public partial class AdminViewModel(AppDbContext context, INavigationService nav
 
     public override async Task OnActivatedAsync()
     {
-        AllUsers = new ObservableCollection<User>(await context.Users.ToListAsync());
+        AllUsers = new ObservableCollection<User>(await Context.Users.ToListAsync());
     }
 
     [RelayCommand]
     private void AddUser()
     {
-        navigationService.NavigateToAsync<CreateEditUserViewModel>();
+        NavigationService.NavigateToAsync<CreateEditUserViewModel>();
     }
 
     [RelayCommand]
     private void EditUser(User? user)
     {
         if (user != null)
-            navigationService.NavigateToAsync<CreateEditUserViewModel>(user.Id);
+            NavigationService.NavigateToAsync<CreateEditUserViewModel>(user.Id);
     }
 
     [RelayCommand]
@@ -42,8 +43,8 @@ public partial class AdminViewModel(AppDbContext context, INavigationService nav
             MessageBoxButton.YesNo);
         if (choice == MessageBoxResult.Yes)
         {
-            context.Users.Remove(user);
-            await context.SaveChangesAsync();
+            Context.Users.Remove(user);
+            await Context.SaveChangesAsync();
             AllUsers.Remove(user);
         }
     }

@@ -11,31 +11,18 @@ using Microsoft.EntityFrameworkCore;
 namespace DemExam.Desktop.ViewModels;
 
 public partial class CreateEditUserViewModel(AppDbContext context, INavigationService navigationService)
-    : ViewModelBase, IParameterReceiver
+    : ViewModelBase(context, navigationService), IParameterReceiver
 {
-    [ObservableProperty] private User _user = null!;
-
     [ObservableProperty] private bool _isEditMode;
 
     [ObservableProperty] private ObservableCollection<UserRole> _roles = [];
-
-    [ObservableProperty] private ObservableCollection<UserStatus> _statuses = [];
 
     [ObservableProperty] private UserRole? _selectedRole;
 
     [ObservableProperty] private UserStatus? _selectedStatus;
 
-    partial void OnSelectedRoleChanged(UserRole? value)
-    {
-        if (value != null)
-            User.UserRole = value.Id;
-    }
-
-    partial void OnSelectedStatusChanged(UserStatus? value)
-    {
-        if (value != null)
-            User.UserStatus = value.Id;
-    }
+    [ObservableProperty] private ObservableCollection<UserStatus> _statuses = [];
+    [ObservableProperty] private User _user = null!;
 
     public async Task OnNavigatedToAsync(object? parameter)
     {
@@ -61,10 +48,22 @@ public partial class CreateEditUserViewModel(AppDbContext context, INavigationSe
         }
     }
 
+    partial void OnSelectedRoleChanged(UserRole? value)
+    {
+        if (value != null)
+            User.UserRole = value.Id;
+    }
+
+    partial void OnSelectedStatusChanged(UserStatus? value)
+    {
+        if (value != null)
+            User.UserStatus = value.Id;
+    }
+
     private async Task LoadRolesAndStatusesAsync()
     {
-        var roles = await context.UserRoles.ToListAsync();
-        var statuses = await context.UserStatuses.ToListAsync();
+        var roles = await Context.UserRoles.ToListAsync();
+        var statuses = await Context.UserStatuses.ToListAsync();
 
         Roles = new ObservableCollection<UserRole>(roles);
         Statuses = new ObservableCollection<UserStatus>(statuses);
@@ -74,7 +73,7 @@ public partial class CreateEditUserViewModel(AppDbContext context, INavigationSe
     {
         try
         {
-            User = await context.Users.FindAsync(userId) ??
+            User = await Context.Users.FindAsync(userId) ??
                    throw new NotFoundException($"Пользователь с ID: {userId} не найден");
         }
         catch (Exception ex)
@@ -98,11 +97,11 @@ public partial class CreateEditUserViewModel(AppDbContext context, INavigationSe
         try
         {
             if (IsEditMode)
-                context.Users.Update(User);
+                Context.Users.Update(User);
             else
-                await context.Users.AddAsync(User);
+                await Context.Users.AddAsync(User);
 
-            await context.SaveChangesAsync();
+            await Context.SaveChangesAsync();
         }
         catch (Exception ex)
         {
@@ -111,7 +110,7 @@ public partial class CreateEditUserViewModel(AppDbContext context, INavigationSe
         }
         finally
         {
-            await navigationService.NavigateToAsync<AdminViewModel>();
+            await NavigationService.NavigateToAsync<AdminViewModel>();
         }
     }
 
@@ -121,6 +120,6 @@ public partial class CreateEditUserViewModel(AppDbContext context, INavigationSe
         User = new User();
         Roles.Clear();
         Statuses.Clear();
-        navigationService.NavigateToAsync<AdminViewModel>();
+        NavigationService.NavigateToAsync<AdminViewModel>();
     }
 }
