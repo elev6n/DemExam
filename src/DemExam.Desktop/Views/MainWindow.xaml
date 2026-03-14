@@ -9,18 +9,22 @@
         Title="MainWindow" MinHeight="768" MinWidth="1366">
 
     <Window.Resources>
+        <DataTemplate DataType="{x:Type vm:AuthorizationViewModel}">
+            <views:AuthorizationView />
+        </DataTemplate>
+
         <DataTemplate DataType="{x:Type vm:AdminViewModel}">
             <views:AdminView />
         </DataTemplate>
 
         <DataTemplate DataType="{x:Type vm:CreateEditUserViewModel}">
-            <views:CreateEditUserView></views:CreateEditUserView>
+            <views:CreateEditUserView />
         </DataTemplate>
     </Window.Resources>
 
     <StackPanel>
         <TextBlock Text="MainWindow" FontSize="24" FontWeight="Bold" />
-        
-        <ContentControl Content="{Binding CurrentViewModel}"></ContentControl>
+
+        <ContentControl Content="{Binding CurrentViewModel}" />
     </StackPanel>
 </Window>

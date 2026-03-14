@@ -50,23 +50,24 @@ public partial class App : Application
         services.AddSingleton<INavigationService, NavigationService>();
 
         // ViewModels
+        services.AddTransient<AuthorizationViewModel>();
         services.AddTransient<AdminViewModel>();
         services.AddTransient<CreateEditUserViewModel>();
 
         // Views
         services.AddSingleton<MainWindow>();
-        services.AddTransient<LoginWindow>();
+        services.AddTransient<AuthorizationView>();
         services.AddTransient<CaptchaWindow>();
         services.AddTransient<AdminView>();
         services.AddTransient<CreateEditUserView>();
     }
 
-    protected override void OnStartup(StartupEventArgs e)
+    protected override async void OnStartup(StartupEventArgs e)
     {
         base.OnStartup(e);
 
-        var loginWindow = _serviceProvider.GetRequiredService<LoginWindow>();
-        loginWindow.Show();
+        var mainWindow = _serviceProvider.GetRequiredService<MainWindow>();
+        mainWindow.Show();
     }
 
     protected override void OnExit(ExitEventArgs e)
